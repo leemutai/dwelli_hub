@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}
+	{{ user.name }}
+{% endblock %}
+
+{% block content %}
+    {% include 'navbar.html' %}
+	<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-sm-5">
+        {% include 'alerts.html' %}
+            <div class="card">
+                {% if employee.profile %}
+                    <img src="{{ user.photo.url }}" height="300" width="300" alt="">
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="card-title">{{ user.name }}</h2>
+                    <p class="card-text">Address {{ user.email }}</p>
+                    <p class="card-text">Phone: {{ user.phone }}</p>
+                    <p class="card-text">Added On {{ user.created_at | naturaltime }}</p>
+                    <p class="card-text">Updated at: {{ user.updated_at | naturaltime }}</p>
+
+
+                    {% if perms.webapp.delete_user %}
+                    	 <a href="{% url 'delete' user.id %}" class="btn btn-danger w-100">Delete</a>
+                    {% endif %}
+
+                    {% if perms.webapp.change_user %}
+                    	 <a href="{% url 'update' user.id %}" class="btn btn-primary w-100 mt-3">Update</a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

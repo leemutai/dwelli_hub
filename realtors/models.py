@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 
+
 # Create your models here.
 
 
@@ -13,6 +14,18 @@ class Realtor(models.Model):
     is_mvp = models.BooleanField(default=datetime.now, blank=True)
     hire_date = models.DateTimeField(default=datetime.now, blank=True)
 
+    def __str__(self):
+        return self.name
+
+
+class User(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    photo = models.ImageField(upload_to='user/')
+    phone = models.CharField(max_length=100)
+    is_realtor = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)  # Once during creation
+    updated_at = models.DateTimeField(auto_now=True, null=True)  # Every time an update happens
 
     def __str__(self):
         return self.name
