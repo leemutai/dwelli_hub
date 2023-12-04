@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 
-from realtors.app_forms import UserForm, RealtorForm
+from realtors.app_forms import UserForm, RealtorForm, UpdateProfile
 from realtors.models import User, Realtor
 
 
@@ -47,21 +47,21 @@ def user_delete(request, user_id):
     return redirect("all")
 
 
-@login_required
-@permission_required('webapp.change_user', raise_exception=True)
-def user_update(request, user_id):
-    user = get_object_or_404(User, pk=user_id)  # SELECT * FROM employees WHERE id=1
-    if request.method == "POST":
-        form = UserForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "User updated successfully")
-            return redirect('details', user_id)
-
-    else:
-        form = UserForm(instance=user)
-
-    return render(request, "update.html", {"form": form})
+# @login_required
+# @permission_required('webapp.change_user', raise_exception=True)
+# def user_update(request, user_id):
+#     user = get_object_or_404(User, pk=user_id)  # SELECT * FROM employees WHERE id=1
+#     if request.method == "POST":
+#         form = UserForm(request.POST, request.FILES, instance=user)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "User updated successfully")
+#             return redirect('details', user_id)
+#
+#     else:
+#         form = UserForm(instance=user)
+#
+#     return render(request, "update.html", {"form": form})
 
 
 # def user(request):
@@ -113,11 +113,13 @@ def search_realtor(request):
     # Elastic search
     return render(request, "all_realtors.html", {"realtor": data})
 
+
 @login_required
 @permission_required('webapp.view_realtor', raise_exception=True)
 def realtor_details(request, realtor_id):
     realtor = Realtor.objects.get(pk=realtor_id)
     return render(request, 'realtor_details.html', {"realtor": realtor})
+
 
 @login_required
 # @permission_required('webapp.remove_realtor', raise_exception=True)
@@ -142,3 +144,19 @@ def realtor_update(request, realtor_id):
 
     return render(request, "update.html", {"form": form})
 
+
+@login_required
+@permission_required('webapp.change_user', raise_exception=True)
+def user_update(request, user_id):
+    # user = get_object_or_404(User, pk=user_id)  # SELECT * FROM employees WHERE id=1
+    if request.method == "POST":
+        form = UpdateProfile(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "User updated successfully")
+            return redirect('details', user_id)
+
+    else:
+        form = UserForm(instance=user)
+
+    return render(request, "update.html", {"form": form})
